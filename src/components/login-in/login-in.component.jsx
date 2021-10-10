@@ -18,13 +18,17 @@ class LoginIn extends React.Component {
         // this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange (event){
+    handleChange =(event)=>{
         const {name, value} =event.target;
+        console.log(name);
         this.setState({[name]:value})
     }
 
-    handleSubmit(event){
+    handleSubmit = (event) => {
         event.preventDefault();
+
+
+
         
     }
 

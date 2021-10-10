@@ -7,7 +7,9 @@ import Header from './components/header/header.components';
 import Homepage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import LoginInAndOut from './pages/login-in-and-login-up/login-in-and-login-up.component';
-import { auth } from './firebase/firebase.utils';
+import { auth, storeUserToFirestore} from './firebase/firebase.utils';
+import  { onSnapshot,} from "firebase/firestore";
+
 
 
 class App extends React.Component {
@@ -22,11 +24,25 @@ class App extends React.Component {
   unSubscribeFromGoogle = null;
 
   componentDidMount(){
-    console.log('fuck');
-    this.unSubscribeFromGoogle = auth.onAuthStateChanged( (user) => {
-      this.setState({currentUser:user})
+    
+    this.unSubscribeFromGoogle = auth.onAuthStateChanged( async (userAuth) => {
+      if(userAuth){
+        const userRef = await storeUserToFirestore(userAuth);
+        
+        onSnapshot(userRef,snapShot =>{
+          this.setState({
+            id:snapShot.id,
+            ...snapShot.data()
+          }, console.log(this.state))
+        })
+      }
+      else{
+        this.setState(userAuth);
+      }
+      
 
     })
+    
   }
   componentWillUnmount(){
     this.unSubscribeFromGoogle();
