@@ -18,32 +18,34 @@ class App extends React.Component {
 
     this.state = {
       currentUser:null,
-    }
+    };
   }
 
   unSubscribeFromGoogle = null;
 
   componentDidMount(){
-    
     this.unSubscribeFromGoogle = auth.onAuthStateChanged( async (userAuth) => {
+
       if(userAuth){
+        
         const userRef = await storeUserToFirestore(userAuth);
         
-        onSnapshot(userRef,snapShot =>{
+        onSnapshot(userRef, (snapShot) =>{
+          // console.log(snapShot.data());
           this.setState({
-            id:snapShot.id,
-            ...snapShot.data()
-          }, console.log(this.state))
-        })
+            currentUser:{id:snapShot.id,
+                         ...snapShot.data()
+                        }
+          });
+        });
       }
       else{
-        this.setState(userAuth);
+        this.setState({ currentUser: userAuth });
+        console.log('fuck');
       }
-      
+    });
+  };
 
-    })
-    
-  }
   componentWillUnmount(){
     this.unSubscribeFromGoogle();
   }
@@ -53,9 +55,9 @@ class App extends React.Component {
       <div >
         <Header currentUser = {this.state.currentUser}/>
         <Switch>
-        <Route exact path = '/' component={Homepage} />
-        <Route path = '/shop' component={ShopPage}  />
-        <Route path = '/loginin' component={LoginInAndOut} />
+          <Route exact path = '/' component={Homepage} />
+          <Route path = '/shop' component={ShopPage}  />
+          <Route path = '/loginin' component={LoginInAndOut} />
         </Switch>
       </div>
     );

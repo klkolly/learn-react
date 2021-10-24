@@ -40,7 +40,7 @@ class SignUp extends React.Component {
 
         try{
             const {user} = await createUserWithEmailAndPassword(auth, email, password);
-            console.log(user);
+            
             await storeUserToFirestore(user,{displayName});
             this.setState({
                 displayName: '',
